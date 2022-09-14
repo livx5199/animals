@@ -10,12 +10,15 @@
     <h1>Animals</h1>
     
     <table id="list">
+      <button class="filter" data-action="filter" data-filter="cat">Cats only</button>
+      <button class="filter" data-action="filter" data-filter="dog">Dogs only</button>
+      <button class="filter" data-action="filter" data-filter="*">All </button>
       <thead>
-        <tr>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Description</th>
-          <th>Age</th>
+        <tr id="sorting">
+          <th data-action="sort" data-sort-direction="asc" data-sort="name">Name</th>
+          <th data-action="sort" data-sort-direction="asc" data-sort="type">Type</th>
+          <th data-action="sort" data-sort-direction="asc" data-sort="desc">Description</th>
+          <th data-action="sort" data-sort-direction="asc" data-sort="age">Age</th>
         </tr>
       </thead>
       <tbody>

@@ -2,6 +2,10 @@
 
 window.addEventListener("DOMContentLoaded", start);
 
+// const catButton = document.querySelector(".catsbutton");
+// const dogButton = document.querySelector(".dogsbutton");
+// const allButton = document.querySelector(".allbutton");
+
 const allAnimals = [];
 const Animal = {
     name: "",
@@ -10,10 +14,92 @@ const Animal = {
     age: 0
 };
 
+
+
 function start( ) {
     console.log("ready");
 
     loadJSON();
+    registerButtons();
+
+}
+
+function registerButtons() {
+    document.querySelectorAll("[data-action='filter']")
+        .forEach(button => button.addEventListener("click", selectFilter));
+    
+        document.querySelectorAll("[data-action='sort']")
+        .forEach(button => button.addEventListener("click", selectSort));
+}
+
+function selectFilter(event) {
+    const filter = event.target.dataset.filter;
+    console.log("user selected", filter);
+    filtering(filter);
+}
+
+function selectSort(event) {
+    const sortBy = event.target.dataset.sort;
+    console.log("user selected", sortBy);
+    sortList(sortBy);
+}
+
+function filtering(animalType) {
+    let filteredList = allAnimals;
+
+    if (animalType === "cat") {
+        filteredList = allAnimals.filter(isCat);
+        console.log(filteredList);
+    } else if (animalType === "dog") {
+        filteredList = allAnimals.filter(isDog);
+        console.log(filteredList);
+    } else {
+        filteredList = allAnimals;
+}
+    
+    displayList(filteredList);
+}
+
+function isCat(animal) {
+    // if (animal.type == "cat") {
+    //     return true;
+    // }
+    // return false;
+ 
+    return animal.type === "cat";
+}
+
+function isDog(animal) {
+    return animal.type === "dog";
+}
+
+function sortList(sortBy) {
+    let sortedList = allAnimals;
+
+    if (sortBy === "name") {
+        sortedList = sortedList.sort(sortByName);
+        
+    } else if (sortBy === "type") {
+        sortedList = sortedList.sort(sortByType);
+    }
+    
+    displayList(sortedList);
+}
+
+function sortByName(animalA, animalB) {
+    if (animalA.name < animalB.name) {
+        return -1;
+    } else {
+        return 1;
+    }
+}
+
+function sortByType(animalA, animalB) {
+    if (animalA.type < animalB.type) {
+        return -1;
+    } else {
+        return 1;
+    }
 }
 
 
@@ -46,18 +132,19 @@ function prepareObjects(jsonData) {
     });
 
     displayList();
+    filtering();
 }
 
-function displayList() {
+function displayList(filter) {
     // clear the list
     document.querySelector("#list tbody").innerHTML = "";
 
     // build a new list
-    allAnimals.forEach( displayAnimal );
+    filter.forEach( displayAnimal );
 }
 
 function displayAnimal( animal ) {
-    console.log(animal);
+    // console.log(animal);
     // create clone
     const clone = document.querySelector("template#animal").content.cloneNode(true);
 
