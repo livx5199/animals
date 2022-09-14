@@ -14,6 +14,12 @@ const Animal = {
     age: 0
 };
 
+const settings = {
+    filter: "all",
+    sortBy: "name",
+    sortDir: "asc"
+}
+
 
 
 function start( ) {
@@ -35,37 +41,36 @@ function registerButtons() {
 function selectFilter(event) {
     const filter = event.target.dataset.filter;
     console.log("user selected", filter);
-    filtering(filter);
+    
+    setFilter(filter);
 }
 
-function selectSort(event) {
-    const sortBy = event.target.dataset.sort;
-    const sortDir = event.target.dataset.sortDirection;
-
-    //toggle direction
-    if (sortDir === "asc") {
-        event.target.dataset.sortDirection = "desc";
-    } else {
-        event.target.dataset.sortDirection = "asc";
-    }
-    console.log("user selected", sortBy);
-    sortList(sortBy, sortDir);
+function setFilter(filter) {
+    settings.filterBy = filter;
+    
+    buildList();
 }
 
-function filtering(animalType) {
-    let filteredList = allAnimals;
 
-    if (animalType === "cat") {
+function filtering(filteredList) {
+    // let filteredList = allAnimals;
+
+    if (settings.filterBy === "cat") {
         filteredList = allAnimals.filter(isCat);
-        console.log(filteredList);
-    } else if (animalType === "dog") {
+    } else if (settings.filterBy === "dog") {
         filteredList = allAnimals.filter(isDog);
-        console.log(filteredList);
     } else {
         filteredList = allAnimals;
 }
-    
-    displayList(filteredList);
+    return filteredList;
+}
+
+function buildList() {
+    const currentList = filtering(allAnimals);
+    const sortedList = sortList(currentList);
+
+    displayList(sortedList);
+    console.log(currentList);
 }
 
 function isCat(animal) {
@@ -81,24 +86,50 @@ function isDog(animal) {
     return animal.type === "dog";
 }
 
-function sortList(sortBy, sortDir) {
-    let sortedList = allAnimals;
+function selectSort(event) {
+    const sortBy = event.target.dataset.sort;
+    const sortDir = event.target.dataset.sortDirection;
+
+    //find old sortBy element
+    const oldElement = document.querySelector(`[data-sort='${settings.sortBy}']`);
+    oldElement.classList.remove("sortby");
+
+    //indicate active sort
+    event.target.classList.add("sortby");
+
+    //toggle direction
+    if (sortDir === "asc") {
+        event.target.dataset.sortDirection = "desc";
+    } else {
+        event.target.dataset.sortDirection = "asc";
+    }
+    console.log("user selected", sortBy);
+    setSort(sortBy, sortDir);
+
+}
+function setSort(sortBy, sortDir) {
+    settings.sortBy = sortBy;
+    settings.sortDir = sortDir;
+    buildList();
+}
+
+function sortList(sortedList) { 
     let direction = 1;
-    if (sortDir === "desc") {
+    if (settings.sortDir === "desc") {
         direction = -1;
     } else {
-        direction = 1;
+        settings.direction = 1;
     }
-    sortedList = sortedList.sort(sortByProperty);
+sortedList = sortedList.sort(sortByProperty);
 
     function sortByProperty(animalA, animalB) {
-        if (animalA[sortBy] < animalB[sortBy]) {
+        if (animalA[settings.sortBy] < animalB[settings.sortBy]) {
             return -1 * direction;
         } else {
             return 1 * direction;
         }
     }    
-    displayList(sortedList);
+    return sortedList;
 }
 
 function loadJSON() {
