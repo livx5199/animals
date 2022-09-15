@@ -11,7 +11,8 @@ const Animal = {
     name: "",
     type: "",
     desc: "",
-    age: 0
+    age: 0,
+    star: false
 };
 
 const settings = {
@@ -50,7 +51,6 @@ function setFilter(filter) {
     
     buildList();
 }
-
 
 function filtering(filteredList) {
     // let filteredList = allAnimals;
@@ -160,7 +160,7 @@ function prepareObjects(jsonData) {
         allAnimals.push(animal);
     });
 
-    displayList();
+    buildList();
     filtering();
 }
 
@@ -183,8 +183,27 @@ function displayAnimal( animal ) {
     clone.querySelector("[data-field=type]").textContent = animal.type;
     clone.querySelector("[data-field=age]").textContent = animal.age;
 
+    if (animal.star === true) {
+        clone.querySelector("[data-field=star]").textContent = "⭐"
+    } else {
+        clone.querySelector("[data-field=star]").textContent = "☆"
+    }
+
+    clone.querySelector("[data-field=star]").addEventListener("click", clickStar);
+    
+    function clickStar() {
+    if (animal.star === true) {
+        animal.star = false;
+    } else {
+        animal.star = true;
+    }
+
+    buildList();
+}
     // append clone to list
     document.querySelector("#list tbody").appendChild( clone );
 }
+
+
 
 
